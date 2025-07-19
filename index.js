@@ -29,6 +29,7 @@ const server = http.createServer(async (req, res) => {
   if (req.url === "/sushi" && req.method === "GET" ) {
     try {
       const data = await Sushi.find();
+       console.log("Найдено документов:", data.length);
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(JSON.stringify(data));
     } catch (err) {

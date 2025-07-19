@@ -1,21 +1,15 @@
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
-const Sushi = require('./models/sushi');
-const sushiData = require('./sushiData'); // если вынес в отдельный файл
-
 dotenv.config();
 
-const start = async () => {
+const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URL);
-    await Sushi.deleteMany(); // если хочешь очистить сначала
-    await Sushi.insertMany(sushiData);
-    console.log('✅ Данные успешно загружены!');
-    process.exit();
+    console.log('✅ MongoDB connected');
   } catch (error) {
-    console.error('❌ Ошибка загрузки:', error.message);
+    console.error('❌ MongoDB connection error:', error);
     process.exit(1);
   }
 };
 
-start();
+module.exports = connectDB;
