@@ -6,6 +6,9 @@ const sushiSchema = new mongoose.Schema({
   price: { type: Number, required: true },
   category: String,
   imageUrl: String,
+  id: Number ,
+  weight: String ,
+  imageUrl: String ,
   stock: { type: Number, default: 0 },
 }, { timestamps: true });
 
