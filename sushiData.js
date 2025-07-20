@@ -284,7 +284,7 @@ const sushiData = [
     category: "deliveryDnepr",
     weight: 1080  ,
     id: 29 ,
-    imageUrl: "",
+    imageUrl: "https://cdn.wesushi.com.ua/ws-ukr/products/0003-set-fudzi-32-sht.jpg?&w=650&format=auto&mode=fit&q=80",
   },
       {
     name: "Сет Самурай 32 шт.",

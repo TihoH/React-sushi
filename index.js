@@ -20,16 +20,10 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // if ( req.url === "/" && req.method === "GET") {
-  //   res.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" });
-  //   res.end("Сервер суши работает 🍣");
-  //   return;
-  // }
-
-  if (req.url === "/sushi" && req.method === "GET" ) {
+  if (req.url === "/sushi" && req.method === "GET") {
     try {
       const data = await Sushi.find();
-       console.log("Найдено документов:", data.length);
+      console.log("Найдено документов:", data.length);
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(JSON.stringify(data));
     } catch (err) {
@@ -39,8 +33,24 @@ const server = http.createServer(async (req, res) => {
     }
     return;
   }
-  if(req.url === '/sushi/category' && req.method === 'GET'){
+
+  if (req.method === 'GET') {
     console.log(req.url)
+    const url = new URL(req.url, `http://${req.headers.host}`);
+    const category = url.searchParams.get('category')
+      try {
+    const filter = category ? { category } : {}; // если нет category — вернуть всё
+    const data = await Sushi.find(filter);
+
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(data));
+  } catch (err) {
+    console.error('Ошибка при получении суши:', err);
+    res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('Ошибка сервера');
+  }
+  return
+
   }
 
   res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
