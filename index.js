@@ -39,6 +39,9 @@ const server = http.createServer(async (req, res) => {
     }
     return;
   }
+  if(req.url === '/sushi/category' && req.method === 'GET'){
+    console.log(req.url)
+  }
 
   res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
   res.end("Страница не найдена");
