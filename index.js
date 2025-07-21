@@ -1,62 +1,56 @@
-const http = require("http");
-const PORT = 5000;
+  const express = require("express");
+  const mongoose = require("mongoose");
+  const cors = require("cors");
+  require("dotenv").config();
 
-const Sushi = require("./models/sushi");
-require("dotenv").config();
-const connectDB = require("./db");
+  const Sushi = require("./models/sushi"); // твоя модель
+  const connectDB = require("./db");
 
-connectDB();
+  const app = express();
+  const PORT = 5000;
 
-const server = http.createServer(async (req, res) => {
-  // Добавляем заголовок CORS во все ответы // нужно уточнить об этом (понять)
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  // Подключение к БД
+  connectDB();
 
-  // Обрабатываем preflight запросы OPTIONS //  нужно уточнить об этом (понять)
-  if (req.method === "OPTIONS") {
-    res.writeHead(204);
-    res.end();
-    return;
-  }
+  // Middleware
+  app.use(cors()); // включает CORS (можно настроить)
+  app.use(express.json()); // для парсинга JSON
 
-  if (req.url === "/sushi" && req.method === "GET") {
+  // ======= РОУТЫ =======
+
+  // Получить все суши или по категории
+  app.get("/getProduct/:id", async (req, res) => {
+    const { id } = req.params;
+      console.log("🔥 /getProduct/:id вызван");
+
     try {
-      const data = await Sushi.find();
-      console.log("Найдено документов:", data.length);
-      res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify(data));
-    } catch (err) {
-      console.error(err);
-      res.writeHead(500, { "Content-Type": "text/plain; charset=utf-8" });
-      res.end("Ошибка при получении суши");
+      const product = await Sushi.findOne({ id: Number(id) });
+      if (!product) {
+        return res.status(404).send("Продукт не найден");
+      }
+     return res.json(product)
+    } catch (error) {
+      console.error("Ошибка при получении продукта:", error);
+      res.status(500).send("Ошибка сервера");
     }
-    return;
-  }
+  });
 
-  if (req.method === 'GET') {
-    console.log(req.url)
-    const url = new URL(req.url, `http://${req.headers.host}`);
-    const category = url.searchParams.get('category')
-      try {
-    const filter = category ? { category } : {}; // если нет category — вернуть всё
-    const data = await Sushi.find(filter);
+  // Получить все суши или по категории
+  app.get("/sushi", async (req, res) => {
+    console.log("📦 /sushi вызван");
+    const { category } = req.query;
+    try {
+      const filter = category ? { category } : {};
+      const data = await Sushi.find(filter);
+      res.json(data);
+    } catch (error) {
+      console.error("Ошибка при получении суши:", error);
+      res.status(500).send("Ошибка сервера");
+    }
+  });
 
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify(data));
-  } catch (err) {
-    console.error('Ошибка при получении суши:', err);
-    res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
-    res.end('Ошибка сервера');
-  }
-  return
+  // ======================
 
-  }
-
-  res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
-  res.end("Страница не найдена");
-});
-
-server.listen(PORT, () => {
-  console.log(`🚀 Сервер запущен на http://localhost:${PORT}`);
-});
+  app.listen(PORT, () => {
+    console.log(`🚀 Сервер запущен на http://localhost:${PORT}`);
+  });
