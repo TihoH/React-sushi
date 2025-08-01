@@ -35,9 +35,28 @@
     }
   });
 
+  app.get("/search", async (req, res) => {
+  const { q } = req.query;
+
+  try {
+    if (!q || q.trim() === "") {
+      return res.status(400).json({ message: "Параметр запроса 'q' обязателен" });
+    }
+
+    // Поиск по полю title (регистронезависимый)
+    const results = await Sushi.find({
+      name: { $regex: q, $options: "i" }
+    });
+
+    res.json(results);
+  } catch (error) {
+    console.error("Ошибка при поиске:", error);
+    res.status(500).send("Ошибка сервера");
+  }
+});
+
   // Получить все суши или по категории
   app.get("/sushi", async (req, res) => {
-    console.log("📦 /sushi вызван");
     const { category } = req.query;
     try {
       const filter = category ? { category } : {};

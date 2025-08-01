@@ -8,6 +8,7 @@ const sushiSchema = new mongoose.Schema({
   imageUrl: String,
   id: Number ,
   weight: String ,
+  recomended: String ,
   stock: { type: Number, default: 0 },
 }, { timestamps: true });
 
