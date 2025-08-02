@@ -68,6 +68,29 @@
     }
   });
 
+  app.get("/sushi/random", async (req, res) => {
+  // Генерируем случайное количество: от 4 до 6
+  const randomCount = Math.floor(Math.random() * 3) + 4; // 4, 5 или 6
+
+  try {
+    const randomSushi = await Sushi.aggregate([
+      {
+        $match: {
+          id: { $gte: 1, $lte: 120 }
+        }
+      },
+      {
+        $sample: { size: randomCount }
+      }
+    ]);
+
+    res.json(randomSushi);
+  } catch (error) {
+    console.error("Ошибка при получении случайных суши:", error);
+    res.status(500).send("Ошибка сервера");
+  }
+});
+
   // ======================
 
   app.listen(PORT, () => {
