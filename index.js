@@ -5,7 +5,8 @@
 
   const Sushi = require("./models/sushi"); // твоя модель
   const connectDB = require("./db");
-
+  const registration = require('./modules/registration')
+  const loginUser = require('./modules/loginUser')
   const app = express();
   const PORT = 5000;
 
@@ -13,6 +14,7 @@
   connectDB();
 
   // Middleware
+  app.use(express.json());
   app.use(cors()); // включает CORS (можно настроить)
   app.use(express.json()); // для парсинга JSON
 
@@ -90,6 +92,14 @@
     res.status(500).send("Ошибка сервера");
   }
 });
+
+app.use('/' , registration )
+app.use('/' , loginUser )
+
+app.post( '/:userId/orders' , async (req, res) => {
+  const userId = req.params
+  const items = req.body
+} )
 
   // ======================
 
