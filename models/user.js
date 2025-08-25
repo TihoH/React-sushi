@@ -9,9 +9,9 @@ const itemProductSchema = new mongoose.Schema({
   stock: Number,
   weight: String,
   imageUrl: String,
-  createdAt: { type: String, default: () => new Date().toISOString() },
-  updatedAt: { type: String, default: () => new Date().toISOString() },
-  quantity: { type: Number, default: 1 } // кол-во в заказе
+  createdAt: { type: Date, default: Date.now }, // ✅ теперь Date
+  updatedAt: { type: Date, default: Date.now }, // ✅ теперь Date
+  quantity: { type: Number, default: 1 },
 });
 
 const userSchema = new mongoose.Schema({
@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   items: [itemProductSchema],
-});
+  address: { type: String, default: "" },
+  phone: { type: String, default: "" } ,
+  favoriteProducts: [itemProductSchema],
+
+}, { timestamps: true }); // автоматически добавит createdAt и updatedAt
 
 module.exports = mongoose.model("User", userSchema);
