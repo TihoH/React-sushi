@@ -13,6 +13,7 @@ const adedFavories = require("./modules/adedFavories");
 const getAllIdFavorites = require("./modules/getAllIdFavorites");
 const getFavorites = require("./modules/getFavorites");
 const clearFavorites = require("./modules/clearFavorites");
+const deleteItemFavorites = require("./modules/deleteItemFavorites");
 
 const app = express();
 const PORT = 5000;
@@ -110,6 +111,7 @@ app.use("/", adedFavories);
 app.use("/", getAllIdFavorites);
 app.use("/", getFavorites);
 app.use("/", clearFavorites);
+app.use("/", deleteItemFavorites);
 
 app.post("/:userId/orders", async (req, res) => {
   const userId = req.params;
